@@ -1,37 +1,53 @@
-# skeleton
+# fastify-isolate
 
-Template repository to create standardized Fastify plugins.
+Loads a fastify plugin into a separate V8 isolate.
+It will have a different require.cache, so loaded modules
+could be safely gc'ed once the isolate goes out of scope.
 
-# Getting started
+## Install
 
-- Click on `Use this template` above to create a new repository based on this repository.
-
-# What's included?
-
-1. Github CI Actions for installing, testing your package.
-2. Github CI Actions to validate different package managers.
-3. Dependabot V2 config to automate dependency updates.
-4. Template for the GitHub App [Stale](https://github.com/apps/stale) to mark issues as stale. 
-5. Template for the GitHub App [tests-checker](https://github.com/apps/tests-checker) to check if a PR contains tests.
-
-# Repository structure
-
+```bash
+npm i fastify-isolate
 ```
-├── .github
-│   ├── workflows
-│   │   ├── ci.yml
-│   │   └── package-manager-ci.yml
-│   ├── .stale.yml
-│   ├── dependabot.yml
-│   └── tests_checker.yml
-│
-├── docs (Documentation)
-│   
-├── examples (Code examples)
-│
-├── test (Application tests)
-│   
-├── types (Typescript types)
-│  
-└── README.md
+
+## Usage
+
+```js
+'use strict'
+
+const Fastify = require('fastify')
+const isolate = require('fastify-isolate')
+
+const app = Fastify()
+
+app.addHook('onRequest', async function (req) {
+  req.p = Promise.resolve('hello')
+  console.log('promise constructor is the same', Object.getPrototypeOf(req.p).constructor === Promise)
+})
+
+app.register(isolate, {
+  path: __dirname + '/plugin.js'
+})
+
+app.listen(3000)
 ```
+
+Inside `plugin.js`:
+
+```js
+'use strict'
+
+// We are in a diff V8 isolate now
+const sleep = require('timers/promises').setTimeout
+
+module.exports = async function (app) {
+  app.get('/', async (req, res) => {
+    console.log('promise constructor is different', Object.getPrototypeOf(req.p).constructor === Promise)
+    return 'Hello World!'
+  })
+}
+```
+
+## License
+
+MIT

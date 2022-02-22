@@ -1,0 +1,39 @@
+{
+  "name": "fastify-isolate",
+  "version": "0.0.1",
+  "description": "Load Fastify plugins in a different isolate",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "standard | snazzy && tap test/base.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcollina/fastify-isolate.git"
+  },
+  "keywords": [
+    "fastify",
+    "isolate",
+    "synchronous",
+    "worker"
+  ],
+  "author": "Matteo Collina <hello@matteocollina.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcollina/fastify-isolate/issues"
+  },
+  "homepage": "https://github.com/mcollina/fastify-isolate#readme",
+  "devDependencies": {
+    "fastify": "^3.27.2",
+    "snazzy": "^9.0.0",
+    "standard": "^16.0.4",
+    "tap": "^15.1.6"
+  },
+  "dependencies": {
+    "fastify-plugin": "^3.0.1",
+    "synchronous-worker": "^1.0.2"
+  }
+}
