@@ -2,6 +2,7 @@
 
 const Fastify = require('fastify')
 const isolate = require('..')
+const path = require('path')
 
 const app = Fastify()
 
@@ -11,7 +12,7 @@ app.addHook('onRequest', async function (req) {
 })
 
 app.register(isolate, {
-  path: __dirname + '/plugin.js'
+  path: path.join(__dirname, '/plugin.js')
 })
 
 app.listen(3000)
