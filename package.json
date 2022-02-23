@@ -1,6 +1,6 @@
 {
   "name": "fastify-isolate",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Load Fastify plugins in a different isolate",
   "main": "index.js",
   "directories": {
