@@ -29,13 +29,13 @@
   "devDependencies": {
     "@fastify/pre-commit": "^2.0.2",
     "fastify": "^3.27.2",
-    "fastify-cookie": "^5.5.0",
+    "fastify-cookie": "^5.6.0",
     "fastify-plugin": "^3.0.1",
     "snazzy": "^9.0.0",
     "standard": "^16.0.4",
     "tap": "^15.1.6"
   },
   "dependencies": {
-    "synchronous-worker": "^1.0.2"
+    "synchronous-worker": "^1.0.3"
   }
 }
