@@ -14,13 +14,9 @@ async function isolate (app, opts) {
   _require = null
 
   app.addHook('onClose', () => {
-    setTimeout(stop, 1000, worker).unref()
+    return worker.stop()
+    // setTimeout(stop, 1000, worker).unref()
   })
-}
-
-/* istanbul ignore next */
-function stop (worker) {
-  worker.stop()
 }
 
 module.exports = isolate
