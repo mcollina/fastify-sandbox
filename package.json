@@ -36,6 +36,6 @@
     "tap": "^15.1.6"
   },
   "dependencies": {
-    "synchronous-worker": "^1.0.3"
+    "synchronous-worker": "^1.0.4"
   }
 }

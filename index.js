@@ -1,6 +1,7 @@
 'use strict'
 
 const SynchronousWorker = require('synchronous-worker')
+const immediate = require('timers/promises').setImmediate
 
 async function isolate (app, opts) {
   const worker = new SynchronousWorker({
@@ -13,14 +14,13 @@ async function isolate (app, opts) {
   app.register(_require(opts.path), opts)
   _require = null
 
-  app.addHook('onClose', () => {
-    setTimeout(stop, 1000, worker).unref()
+  app.addHook('onClose', async () => {
+    // the immediate blocks are needed to ensure that the worker
+    // has actually finished its work before closing
+    await immediate()
+    await worker.stop()
+    await immediate()
   })
-}
-
-/* istanbul ignore next */
-function stop (worker) {
-  worker.stop()
 }
 
 module.exports = isolate
