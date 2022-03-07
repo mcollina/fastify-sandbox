@@ -33,7 +33,7 @@
     "fastify-plugin": "^3.0.1",
     "snazzy": "^9.0.0",
     "standard": "^16.0.4",
-    "tap": "^15.1.6"
+    "tap": "^16.0.0"
   },
   "dependencies": {
     "synchronous-worker": "^1.0.4"
