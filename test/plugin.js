@@ -1,10 +1,18 @@
 'use strict'
 
 module.exports = async function (app) {
-  app.get('/', async (req, res) => {
-    return {
+  app.get('/', async (req) => {
+    const data = {
       check: Object.getPrototypeOf(req.p).constructor === Promise
     }
+    return data
+  })
+
+  app.get('/throw', () => {
+    process.nextTick(() => {
+      throw new Error('kaboom')
+    })
+    return 'ok'
   })
 
   app.register(async function (app) {
@@ -12,14 +20,14 @@ module.exports = async function (app) {
       secret: 'secret'
     })
 
-    app.get('/set-cookie', async (req, res) => {
+    app.get('/set-cookie', async (_, res) => {
       res.cookie('test', 'test')
       return {
         status: 'ok'
       }
     })
 
-    app.get('/get-cookie', async (req, res) => {
+    app.get('/get-cookie', async (req) => {
       return {
         status: req.cookies.test
       }

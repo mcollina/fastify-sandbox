@@ -26,7 +26,11 @@ app.addHook('onRequest', async function (req) {
 })
 
 app.register(isolate, {
-  path: __dirname + '/plugin.js'
+  path: __dirname + '/plugin.js',
+  onError (err) {
+    // uncaught exceptions within the isolate will land inside this
+    // callback
+  }
 })
 
 app.listen(3000)

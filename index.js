@@ -9,7 +9,11 @@ async function isolate (app, opts) {
     sharedMicrotaskQueue: true
   })
 
+  const onError = opts.onError || routeToProcess
+
   let _require = worker.createRequire(opts.path)
+
+  worker.process.on('uncaughtException', onError)
 
   app.register(_require(opts.path), opts)
   _require = null
@@ -21,6 +25,16 @@ async function isolate (app, opts) {
     await worker.stop()
     await immediate()
   })
+
+  function routeToProcess (err) {
+    app.log.error({
+      err: {
+        message: err.message,
+        stack: err.stack
+      }
+    }, 'error encounterated within the isolate, routing to uncaughtException, use onError option to catch')
+    process.emit('uncaughtException', err)
+  }
 }
 
 module.exports = isolate
