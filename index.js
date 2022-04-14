@@ -14,6 +14,7 @@ async function isolate (app, opts) {
   let _require = worker.createRequire(opts.path)
 
   worker.process.on('uncaughtException', onError)
+  worker.globalThis.Error = Error
 
   app.register(_require(opts.path), opts)
   _require = null

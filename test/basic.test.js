@@ -121,3 +121,20 @@ test('throw and route to uncaughtException', ({ same, plan, teardown }) => {
     url: '/throw'
   })
 })
+
+test('error is the same', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/error'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom')
+})
