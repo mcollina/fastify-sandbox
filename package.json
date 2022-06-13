@@ -28,7 +28,7 @@
   "homepage": "https://github.com/mcollina/fastify-isolate#readme",
   "devDependencies": {
     "@fastify/pre-commit": "^2.0.2",
-    "fastify": "^3.27.2",
+    "fastify": "^4.0.2",
     "fastify-cookie": "^5.6.0",
     "fastify-plugin": "^3.0.1",
     "snazzy": "^9.0.0",
