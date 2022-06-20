@@ -32,6 +32,9 @@ jobs:
       - name: Install Dependencies
         id: install
         run: npm install
+      - name: Rebuild after cache
+        id: install
+        run: npm rebuild
       - name: Tests
         id: test
         run: npm test
