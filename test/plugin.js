@@ -20,7 +20,7 @@ module.exports = async function (app) {
   })
 
   app.register(async function (app) {
-    app.register(require('fastify-cookie'), {
+    app.register(require('@fastify/cookie'), {
       secret: 'secret'
     })
 
