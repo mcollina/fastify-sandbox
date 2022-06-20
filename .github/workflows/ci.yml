@@ -18,7 +18,6 @@ jobs:
       matrix:
         node-version:
           - 16
-          - 18
         os:
           - ubuntu-latest
     name: Node ${{ matrix.node-version }}
@@ -32,9 +31,6 @@ jobs:
       - name: Install Dependencies
         id: install
         run: npm install
-      - name: Rebuild after cache
-        id: rebuild
-        run: npm rebuild
       - name: Tests
         id: test
         run: npm test
