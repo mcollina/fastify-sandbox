@@ -138,3 +138,31 @@ test('error is the same', async ({ equal, teardown }) => {
   const data = res.json()
   equal(data.message, 'kaboom')
 })
+
+test('stopTimeout', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.addHook('onRequest', async function (req) {
+    req.p = Promise.resolve('hello')
+  })
+
+  app.get('/check', async function (req) {
+    return {
+      check: Object.getPrototypeOf(req.p).constructor === Promise
+    }
+  })
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js'),
+    stopTimeout: 500
+  })
+
+  const timer = Date.now()
+
+  await app.close()
+
+  const timer2 = Date.now()
+
+  equal(timer2 - timer >= 500, true)
+})
