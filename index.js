@@ -8,6 +8,8 @@ async function isolate (app, opts) {
     sharedMicrotaskQueue: true
   })
 
+  const stopTimeout = opts.stopTimeout || 100
+
   const onError = opts.onError || routeToProcess
 
   let _require = worker.createRequire(opts.path)
@@ -25,7 +27,7 @@ async function isolate (app, opts) {
       worker.stop().then(() => {
         setImmediate(done)
       })
-    }, 100)
+    }, stopTimeout)
   })
 
   function routeToProcess (err) {
