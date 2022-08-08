@@ -1,6 +1,6 @@
 'use strict'
 
-const SynchronousWorker = require('synchronous-worker')
+const SynchronousWorker = require('@matteo.collina/isolates')
 
 async function isolate (app, opts) {
   const worker = new SynchronousWorker({

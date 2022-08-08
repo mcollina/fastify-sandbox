@@ -1,6 +1,6 @@
 {
   "name": "fastify-isolate",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Load Fastify plugins in a different isolate",
   "main": "index.js",
   "directories": {
@@ -36,6 +36,6 @@
     "tap": "^16.0.0"
   },
   "dependencies": {
-    "synchronous-worker": "^1.0.4"
+    "@matteo.collina/isolates": "^2.0.0"
   }
 }
