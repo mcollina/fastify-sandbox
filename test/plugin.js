@@ -37,4 +37,8 @@ module.exports = async function (app) {
       }
     })
   })
+
+  app.get('/globalThis', async (req) => {
+    return { value: globalThis.test || 'not set' }
+  })
 }

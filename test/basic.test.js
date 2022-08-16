@@ -166,3 +166,25 @@ test('stopTimeout', async ({ equal, teardown }) => {
 
   equal(timer2 - timer >= 500, true)
 })
+
+test('customize isolate globalThis', async ({ same, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js'),
+    customizeGlobalThis (_globalThis) {
+      _globalThis.test = 'test'
+    }
+  })
+
+  {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/globalThis'
+    })
+    const data = res.json()
+
+    same(data, { value: 'test' })
+  }
+})
