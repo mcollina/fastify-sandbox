@@ -11,11 +11,14 @@ async function isolate (app, opts) {
   const stopTimeout = opts.stopTimeout || 100
 
   const onError = opts.onError || routeToProcess
+  const customizeGlobalThis = opts.customizeGlobalThis || noop
 
   let _require = worker.createRequire(opts.path)
 
   worker.process.on('uncaughtException', onError)
   worker.globalThis.Error = Error
+
+  customizeGlobalThis(worker.globalThis)
 
   app.register(_require(opts.path), opts)
   _require = null
@@ -40,5 +43,7 @@ async function isolate (app, opts) {
     process.emit('uncaughtException', err)
   }
 }
+
+function noop () {}
 
 module.exports = isolate
