@@ -52,6 +52,13 @@ module.exports = async function (app) {
 }
 ```
 
+## Missing isolates support
+
+In case there is no compiler toolchain available in the system,
+compiling the isolates support for the current Node.js version would
+be impossible. In this case we rely on [import-fresh](https://npm.im/import-fresh)
+instead.
+
 ## License
 
 MIT

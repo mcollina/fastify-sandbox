@@ -41,6 +41,7 @@ async function isolate (app, opts) {
       }, stopTimeout)
     })
   } else {
+    app.log.info('isolates are not available, relying on import-fresh instead')
     app.register(importFresh(opts.path), opts)
   }
 
