@@ -59,6 +59,29 @@ compiling the isolates support for the current Node.js version would
 be impossible. In this case we rely on [import-fresh](https://npm.im/import-fresh)
 instead.
 
+It's also possible to turn on the fallback mechanism with the `fallback: true` option:
+
+```js
+'use strict'
+
+const Fastify = require('fastify')
+const isolate = require('fastify-isolate')
+
+const app = Fastify()
+
+app.addHook('onRequest', async function (req) {
+  req.p = Promise.resolve('hello')
+  console.log('promise constructor is the same', Object.getPrototypeOf(req.p).constructor === Promise)
+})
+
+app.register(isolate, {
+  path: __dirname + '/plugin.js',
+  fallback: true
+})
+
+app.listen(3000)
+```
+
 ## License
 
 MIT
