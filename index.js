@@ -14,8 +14,9 @@ async function isolate (app, opts) {
 
   const onError = opts.onError || routeToProcess
   const customizeGlobalThis = opts.customizeGlobalThis || noop
+  const fallback = opts.fallback || !SynchronousWorker
 
-  if (SynchronousWorker) {
+  if (!fallback) {
     const worker = new SynchronousWorker({
       sharedEventLoop: true,
       sharedMicrotaskQueue: true
