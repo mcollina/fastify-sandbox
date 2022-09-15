@@ -4,6 +4,8 @@ Loads a fastify plugin into a separate V8 isolate.
 It will have a different require.cache, so loaded modules
 could be safely gc'ed once the isolate goes out of scope.
 
+The plugin can be both commonjs or esm.
+
 ## Install
 
 ```bash
