@@ -1,7 +1,10 @@
 'use strict'
 
 const importFresh = require('import-fresh')
+const { writeFile, unlink } = require('fs').promises
+const { dirname, basename, join } = require('path')
 let SynchronousWorker
+let counter = 0
 
 try {
   SynchronousWorker = require('@matteo.collina/isolates')
@@ -22,15 +25,31 @@ async function isolate (app, opts) {
       sharedMicrotaskQueue: true
     })
 
-    let _require = worker.createRequire(opts.path)
-
     worker.process.on('uncaughtException', onError)
     worker.globalThis.Error = Error
 
     customizeGlobalThis(worker.globalThis)
 
-    app.register(_require(opts.path), opts)
-    _require = null
+    const _require = worker.createRequire(opts.path)
+    let plugin
+    try {
+      plugin = _require(opts.path)
+    } catch (err) {
+      if (err.code === 'ERR_REQUIRE_ESM') {
+        const dir = dirname(opts.path)
+        const name = join(dir, `.esm-wrapper-${process.pid}-${counter++}.js`)
+        await writeFile(name, `
+          const plugin = import('./${basename(opts.path)}')
+          module.exports = plugin
+        `)
+        plugin = _require(name)
+        await unlink(name)
+      } else {
+        throw err
+      }
+    }
+
+    app.register(plugin, opts)
 
     app.addHook('onClose', (_, done) => {
       // the immediate blocks are needed to ensure that the worker

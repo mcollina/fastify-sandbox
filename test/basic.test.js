@@ -188,3 +188,42 @@ test('customize isolate globalThis', async ({ same, teardown }) => {
     same(data, { value: 'test' })
   }
 })
+
+test('different isolates with ESM', async ({ same, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.addHook('onRequest', async function (req) {
+    req.p = Promise.resolve('hello')
+  })
+
+  app.get('/check', async function (req) {
+    return {
+      check: Object.getPrototypeOf(req.p).constructor === Promise
+    }
+  })
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.mjs')
+  })
+
+  {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/check'
+    })
+    const data = res.json()
+
+    same(data, { check: true })
+  }
+
+  {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/'
+    })
+    const data = res.json()
+
+    same(data, { check: false })
+  }
+})

@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "standard | snazzy && tap test/*.test.js"
+    "test": "standard | snazzy && tap --no-coverage test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -40,6 +40,6 @@
     "import-fresh": "^3.3.0"
   },
   "optionalDependencies": {
-    "@matteo.collina/isolates": "^2.0.0"
+    "@matteo.collina/isolates": "^2.1.0"
   }
 }
