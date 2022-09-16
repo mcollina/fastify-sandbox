@@ -61,7 +61,7 @@ async function isolate (app, opts) {
       }, stopTimeout)
     })
   } else {
-    app.log.info('isolates are not available, relying on import-fresh instead')
+    app.log.warn('isolates are not available, relying on import-fresh instead. Support for ESM is not available.')
     app.register(importFresh(opts.path), opts)
   }
 
