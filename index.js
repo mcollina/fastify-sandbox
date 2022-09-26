@@ -7,7 +7,7 @@ let SynchronousWorker
 let counter = 0
 
 try {
-  SynchronousWorker = require('@matteo.collina/isolates')
+  SynchronousWorker = require('@matteo.collina/worker')
 } catch {
   // do nothing
 }

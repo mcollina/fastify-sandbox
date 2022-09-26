@@ -1,7 +1,7 @@
 {
-  "name": "fastify-isolate",
+  "name": "fastify-sandbox",
   "version": "0.7.1",
-  "description": "Load Fastify plugins in a different isolate",
+  "description": "Load Fastify plugins in a sandbox",
   "main": "index.js",
   "directories": {
     "example": "examples",
@@ -12,20 +12,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mcollina/fastify-isolate.git"
+    "url": "git+https://github.com/mcollina/fastify-sandbox.git"
   },
   "keywords": [
     "fastify",
-    "isolate",
+    "sandbox",
     "synchronous",
-    "worker"
+    "worker",
+    "hot",
+    "reload"
   ],
   "author": "Matteo Collina <hello@matteocollina.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mcollina/fastify-isolate/issues"
+    "url": "https://github.com/mcollina/fastify-sandbox/issues"
   },
-  "homepage": "https://github.com/mcollina/fastify-isolate#readme",
+  "homepage": "https://github.com/mcollina/fastify-sandbox#readme",
   "devDependencies": {
     "@fastify/cookie": "^8.0.0",
     "@fastify/pre-commit": "^2.0.2",
@@ -40,6 +42,6 @@
     "import-fresh": "^3.3.0"
   },
   "optionalDependencies": {
-    "@matteo.collina/isolates": "^2.1.0"
+    "@matteo.collina/worker": "^3.0.0"
   }
 }

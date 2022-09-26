@@ -8,7 +8,7 @@ const path = require('path')
 
 test('different isolates', async ({ same, teardown }) => {
   const isolate = proxyquire('../', {
-    '@matteo.collina/isolates': null
+    '@matteo.collina/worker': null
   })
 
   const app = Fastify()
