@@ -1,15 +1,18 @@
-# fastify-isolate
+# fastify-sandbox
 
-Loads a fastify plugin into a separate V8 isolate.
+Loads a fastify plugin in a sandbox.
 It will have a different require.cache, so loaded modules
-could be safely gc'ed once the isolate goes out of scope.
+could be safely gc'ed once the sandbox goes out of scope.
 
 The plugin can be both commonjs or esm.
+
+This modules pairs well with [`@fastify/restartable`](https://github.com/fastify/restartable)
+to provide hot-reloading mechanism for Fastify applications.
 
 ## Install
 
 ```bash
-npm i fastify-isolate
+npm i fastify-sandbox
 ```
 
 ## Usage
@@ -18,7 +21,7 @@ npm i fastify-isolate
 'use strict'
 
 const Fastify = require('fastify')
-const isolate = require('fastify-isolate')
+const sandbox = require('fastify-sandbox')
 
 const app = Fastify()
 
@@ -27,10 +30,10 @@ app.addHook('onRequest', async function (req) {
   console.log('promise constructor is the same', Object.getPrototypeOf(req.p).constructor === Promise)
 })
 
-app.register(isolate, {
+app.register(sandbox, {
   path: __dirname + '/plugin.js',
   onError (err) {
-    // uncaught exceptions within the isolate will land inside this
+    // uncaught exceptions within the sandbox will land inside this
     // callback
   }
 })
@@ -43,7 +46,7 @@ Inside `plugin.js`:
 ```js
 'use strict'
 
-// We are in a diff V8 isolate now
+// We are in a different V8 Context now
 const sleep = require('timers/promises').setTimeout
 
 module.exports = async function (app) {
@@ -54,10 +57,10 @@ module.exports = async function (app) {
 }
 ```
 
-## Missing isolates support
+## Missing compiler support
 
 In case there is no compiler toolchain available in the system,
-compiling the isolates support for the current Node.js version would
+compiling the code needed to support for the current Node.js version would
 be impossible. In this case we rely on [import-fresh](https://npm.im/import-fresh)
 instead.
 
@@ -67,7 +70,7 @@ It's also possible to turn on the fallback mechanism with the `fallback: true` o
 'use strict'
 
 const Fastify = require('fastify')
-const isolate = require('fastify-isolate')
+const sandbox = require('fastify-sandbox')
 
 const app = Fastify()
 
@@ -76,13 +79,19 @@ app.addHook('onRequest', async function (req) {
   console.log('promise constructor is the same', Object.getPrototypeOf(req.p).constructor === Promise)
 })
 
-app.register(isolate, {
+app.register(sandbox, {
   path: __dirname + '/plugin.js',
   fallback: true
 })
 
 app.listen(3000)
 ```
+
+Note that ESM is only supported via the native code.
+
+## Caveats
+
+This module does not offer any protection against malicious code.
 
 ## License
 
