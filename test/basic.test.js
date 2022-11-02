@@ -227,3 +227,41 @@ test('different isolates with ESM', async ({ same, teardown }) => {
     same(data, { check: false })
   }
 })
+
+test('can load CommonJS plugin with filename requiring escape', async ({ same, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin \'"`.js')
+  })
+
+  {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/'
+    })
+    const data = res.json()
+
+    same(data, { check: true })
+  }
+})
+
+test('can load ESM plugin with filename requiring escape', async ({ same, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin \'"`.mjs')
+  })
+
+  {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/'
+    })
+    const data = res.json()
+
+    same(data, { check: true })
+  }
+})
