@@ -1,10 +1,10 @@
 'use strict'
 
 const importFresh = require('import-fresh')
-const { writeFile, unlink } = require('fs').promises
-const { dirname, basename, join } = require('path')
+const { join } = require('path')
 let SynchronousWorker
-let counter = 0
+
+const esmWrapperPath = join(__dirname, 'virtual-esm-wrapper.js')
 
 try {
   SynchronousWorker = require('@matteo.collina/worker')
@@ -36,14 +36,13 @@ async function isolate (app, opts) {
       plugin = _require(opts.path)
     } catch (err) {
       if (err.code === 'ERR_REQUIRE_ESM') {
-        const dir = dirname(opts.path)
-        const name = join(dir, `.esm-wrapper-${process.pid}-${counter++}.js`)
-        await writeFile(name, `
-          const plugin = import(${JSON.stringify(`./${basename(opts.path)}`)})
-          module.exports = plugin
-        `)
-        plugin = _require(name)
-        await unlink(name)
+        const Module = _require('module')
+        const module = new Module(esmWrapperPath)
+        module._compile(
+          `module.exports = import(${JSON.stringify(opts.path)})`,
+          esmWrapperPath
+        )
+        plugin = module.exports
       } else {
         throw err
       }
