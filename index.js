@@ -37,7 +37,7 @@ async function isolate (app, opts) {
     } catch (err) {
       if (err.code === 'ERR_REQUIRE_ESM') {
         const dir = dirname(opts.path)
-        const name = join(dir, `.esm-wrapper-${process.pid}-${counter++}.js`)
+        const name = join(dir, `.esm-wrapper-${process.pid}-${counter++}.cjs`)
         await writeFile(name, `
           const plugin = import('./${basename(opts.path)}')
           module.exports = plugin
