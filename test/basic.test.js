@@ -4,6 +4,9 @@ const { test } = require('tap')
 const isolate = require('../')
 const Fastify = require('fastify')
 const path = require('path')
+const fs = require('fs').promises
+const os = require('os')
+const isWin = os.platform() === 'win32'
 
 test('different isolates', async ({ same, teardown }) => {
   const app = Fastify()
@@ -228,12 +231,20 @@ test('different isolates with ESM', async ({ same, teardown }) => {
   }
 })
 
-test('can load CommonJS plugin with filename requiring escape', async ({ same, teardown }) => {
+test('can load CommonJS plugin with filename requiring escape', { skip: isWin }, async ({ same, teardown }) => {
+  const tmpFile = path.join(os.tmpdir(), 'plugin \'"`.js')
+  await fs.writeFile(tmpFile, `
+module.exports = async function (app) {
+  app.get('/', async () => {
+    return { check: true }
+  })
+}
+  `)
   const app = Fastify()
   teardown(app.close.bind(app))
 
   app.register(isolate, {
-    path: path.join(__dirname, '/plugin \'"`.js')
+    path: tmpFile
   })
 
   {
@@ -247,12 +258,21 @@ test('can load CommonJS plugin with filename requiring escape', async ({ same, t
   }
 })
 
-test('can load ESM plugin with filename requiring escape', async ({ same, teardown }) => {
+test('can load ESM plugin with filename requiring escape', { skip: isWin }, async ({ same, teardown }) => {
+  const tmpFile = path.join(os.tmpdir(), 'plugin \'"`.mjs')
+  await fs.writeFile(tmpFile, `
+export default async function (app) {
+  app.get('/', async () => {
+    return { check: true }
+  })
+}
+  `)
+
   const app = Fastify()
   teardown(app.close.bind(app))
 
   app.register(isolate, {
-    path: path.join(__dirname, '/plugin \'"`.mjs')
+    path: tmpFile
   })
 
   {
