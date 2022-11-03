@@ -39,7 +39,7 @@ async function isolate (app, opts) {
         const Module = _require('module')
         const module = new Module(esmWrapperPath)
         module._compile(
-          `module.exports = import(${JSON.stringify(opts.path)})`,
+          `module.exports = import('file://' + ${JSON.stringify(opts.path)})`,
           esmWrapperPath
         )
         plugin = module.exports

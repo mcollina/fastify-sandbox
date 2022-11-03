@@ -18,9 +18,11 @@ jobs:
       matrix:
         node-version:
           - 16
+          - 18
         os:
           - ubuntu-latest
-    name: Node ${{ matrix.node-version }}
+          - windows-latest
+    name: Node ${{ matrix.node-version }} - ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js
