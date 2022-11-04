@@ -2,9 +2,10 @@
 
 const importFresh = require('import-fresh')
 const { join } = require('path')
+const { pathToFileURL } = require('url')
 let SynchronousWorker
 
-const esmWrapperPath = join(__dirname, 'virtual-esm-wrapper.js')
+const esmWrapperPath = join(__dirname, 'esm-wrapper.js')
 
 try {
   SynchronousWorker = require('@matteo.collina/worker')
@@ -36,13 +37,8 @@ async function isolate (app, opts) {
       plugin = _require(opts.path)
     } catch (err) {
       if (err.code === 'ERR_REQUIRE_ESM') {
-        const Module = _require('module')
-        const module = new Module(esmWrapperPath)
-        module._compile(
-          `module.exports = import('file://' + ${JSON.stringify(opts.path)})`,
-          esmWrapperPath
-        )
-        plugin = module.exports
+        const _import = _require(esmWrapperPath)
+        plugin = _import(pathToFileURL(opts.path))
       } else {
         throw err
       }
