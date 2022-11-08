@@ -32,6 +32,9 @@ app.addHook('onRequest', async function (req) {
 
 app.register(sandbox, {
   path: __dirname + '/plugin.js',
+  options: { // this object will be passed as the options of the loaded plugin
+    hello: "world"
+  },
   onError (err) {
     // uncaught exceptions within the sandbox will land inside this
     // callback
