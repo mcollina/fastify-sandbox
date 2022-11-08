@@ -44,7 +44,7 @@ async function isolate (app, opts) {
       }
     }
 
-    app.register(plugin, opts)
+    app.register(plugin, opts.options)
 
     app.addHook('onClose', (_, done) => {
       // the immediate blocks are needed to ensure that the worker
@@ -57,7 +57,7 @@ async function isolate (app, opts) {
     })
   } else {
     app.log.warn('isolates are not available, relying on import-fresh instead. Support for ESM is not available.')
-    app.register(importFresh(opts.path), opts)
+    app.register(importFresh(opts.path), opts.options)
   }
 
   function routeToProcess (err) {

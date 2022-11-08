@@ -91,3 +91,39 @@ test('different isolates', async ({ same, teardown }) => {
     same(data, { check: true })
   }
 })
+
+test('pass options through', async ({ same, teardown }) => {
+  const isolate = proxyquire('../', {
+    '@matteo.collina/worker': null
+  })
+
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.addHook('onRequest', async function (req) {
+    req.p = Promise.resolve('hello')
+  })
+
+  app.get('/check', async function (req) {
+    return {
+      check: Object.getPrototypeOf(req.p).constructor === Promise
+    }
+  })
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js'),
+    options: {
+      something: 'else'
+    }
+  })
+
+  {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/options'
+    })
+    const data = res.json()
+
+    same(data, { something: 'else' })
+  }
+})
