@@ -3,6 +3,7 @@
 const importFresh = require('import-fresh')
 const { join } = require('path')
 const { pathToFileURL } = require('url')
+const fp = require('fastify-plugin')
 let SynchronousWorker
 
 const esmWrapperPath = join(__dirname, 'esm-wrapper.js')
@@ -13,7 +14,7 @@ try {
   // do nothing
 }
 
-async function isolate (app, opts) {
+async function sandbox (app, opts) {
   const stopTimeout = opts.stopTimeout || 100
 
   const onError = opts.onError || routeToProcess
@@ -73,4 +74,7 @@ async function isolate (app, opts) {
 
 function noop () {}
 
-module.exports = isolate
+module.exports = fp(sandbox, {
+  fastify: '4.x',
+  name: 'fastify-sandbox'
+})

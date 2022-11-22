@@ -47,7 +47,7 @@ test('different isolates', async ({ same, teardown }) => {
   }
 })
 
-test('skip-override works', async ({ same, teardown }) => {
+test('skip-override works', async ({ same, teardown, equal }) => {
   const app = Fastify()
   teardown(app.close.bind(app))
 
@@ -73,6 +73,19 @@ test('skip-override works', async ({ same, teardown }) => {
   })
 
   same(res2.json(), { status: 'test' })
+})
+
+test('decorators works', async ({ same, teardown, equal }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/decorator.js')
+  })
+
+  await app
+
+  equal(app.foo, 'bar')
 })
 
 test('throw and onError option', ({ same, plan, teardown }) => {
