@@ -1,6 +1,6 @@
 {
   "name": "fastify-sandbox",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Load Fastify plugins in a sandbox",
   "main": "index.js",
   "directories": {
