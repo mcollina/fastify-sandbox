@@ -127,4 +127,4 @@ yarn.lock
 
 # editor files
 .vscode
-.idea
+.idea.ccls-cache
