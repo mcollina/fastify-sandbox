@@ -330,3 +330,82 @@ test('pass options through', async ({ same, teardown }) => {
     same(data, { something: 'else' })
   }
 })
+
+test('error is the same via promises', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/perror'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom')
+})
+
+test('error is the same in hook', async ({ equal, teardown, plan }) => {
+  plan(3)
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.setErrorHandler(function (err, req, reply) {
+    equal(err instanceof Error, true)
+    return reply.send(err)
+  })
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/perror'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom')
+})
+
+test('TypeError', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/typeerror'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom')
+})
+
+test('throwing a string', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  app.get('/throwstring', async () => {
+    // eslint-disable-next-line no-throw-literal
+    throw 'kaboom'
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/throwstring'
+  })
+  equal(res.statusCode, 500)
+  const data = res.body
+  equal(data, 'kaboom')
+})
