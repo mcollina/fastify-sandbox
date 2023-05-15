@@ -28,7 +28,6 @@ async function sandbox (app, opts) {
     })
 
     worker.process.on('uncaughtException', onError)
-    worker.globalThis.Error = Error
 
     customizeGlobalThis(worker.globalThis)
 
@@ -44,6 +43,17 @@ async function sandbox (app, opts) {
         throw err
       }
     }
+
+    app.setErrorHandler(async (err, req, reply) => {
+      if (err instanceof worker.globalThis.Error) {
+        req.log.debug({ err }, 'error encounterated within the sandbox, wrapping it')
+        const newError = new Error(err.message)
+        newError.cause = err
+        newError.statusCode = err.statusCode || 500
+        err = newError
+      }
+      throw err
+    })
 
     app.register(plugin, opts.options)
 
