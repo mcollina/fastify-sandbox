@@ -50,6 +50,7 @@ async function sandbox (app, opts) {
         const newError = new Error(err.message)
         newError.cause = err
         newError.statusCode = err.statusCode || 500
+        newError.code = err.code || 'FST_SANDBOX_ERROR'
         err = newError
       }
       throw err

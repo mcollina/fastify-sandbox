@@ -153,6 +153,25 @@ test('error is the same', async ({ equal, teardown }) => {
   equal(res.statusCode, 500)
   const data = res.json()
   equal(data.message, 'kaboom')
+  equal(data.code, 'FST_SANDBOX_ERROR')
+})
+
+test('error code is propagated', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/errorcode'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom')
+  equal(data.code, 'MY_ERROR_CODE')
 })
 
 test('stopTimeout', async ({ equal, teardown }) => {
