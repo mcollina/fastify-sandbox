@@ -27,6 +27,12 @@ module.exports = async function (app, opts) {
     throw new TypeError('kaboom')
   })
 
+  app.get('/errorcode', () => {
+    const err = new Error('kaboom')
+    err.code = 'MY_ERROR_CODE'
+    throw err
+  })
+
   app.register(async function (app) {
     app.register(require('@fastify/cookie'), {
       secret: 'secret'
