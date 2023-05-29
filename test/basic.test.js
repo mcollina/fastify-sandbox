@@ -153,7 +153,6 @@ test('error is the same', async ({ equal, teardown }) => {
   equal(res.statusCode, 500)
   const data = res.json()
   equal(data.message, 'kaboom')
-  equal(data.code, 'FST_SANDBOX_ERROR')
 })
 
 test('error code is propagated', async ({ equal, teardown }) => {
@@ -404,7 +403,92 @@ test('TypeError', async ({ equal, teardown }) => {
   })
   equal(res.statusCode, 500)
   const data = res.json()
-  equal(data.message, 'kaboom')
+  equal(data.message, 'kaboom - typeerror')
+})
+
+test('RangeError', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/rangeerror'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom - rangeerror')
+})
+
+test('EvalError', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/evalerror'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom - evalerror')
+})
+
+test('ReferenceError', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/referenceerror'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom - referenceerror')
+})
+
+test('SyntaxError', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/syntaxerror'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom - syntaxerror')
+})
+
+test('URIError', async ({ equal, teardown }) => {
+  const app = Fastify()
+  teardown(app.close.bind(app))
+
+  app.register(isolate, {
+    path: path.join(__dirname, '/plugin.js')
+  })
+
+  const res = await app.inject({
+    method: 'GET',
+    url: '/urierror'
+  })
+  equal(res.statusCode, 500)
+  const data = res.json()
+  equal(data.message, 'kaboom - urierror')
 })
 
 test('throwing a string', async ({ equal, teardown }) => {

@@ -24,7 +24,27 @@ module.exports = async function (app, opts) {
   })
 
   app.get('/typeerror', () => {
-    throw new TypeError('kaboom')
+    throw new TypeError('kaboom - typeerror')
+  })
+
+  app.get('/rangeerror', () => {
+    throw new RangeError('kaboom - rangeerror')
+  })
+
+  app.get('/evalerror', () => {
+    throw new EvalError('kaboom - evalerror')
+  })
+
+  app.get('/referenceerror', () => {
+    throw new ReferenceError('kaboom - referenceerror')
+  })
+
+  app.get('/syntaxerror', () => {
+    throw new SyntaxError('kaboom - syntaxerror')
+  })
+
+  app.get('/urierror', () => {
+    throw new URIError('kaboom - urierror')
   })
 
   app.get('/errorcode', () => {
