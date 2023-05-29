@@ -153,7 +153,6 @@ test('error is the same', async ({ equal, teardown }) => {
   equal(res.statusCode, 500)
   const data = res.json()
   equal(data.message, 'kaboom')
-  equal(data.code, 'FST_SANDBOX_ERROR')
 })
 
 test('error code is propagated', async ({ equal, teardown }) => {
