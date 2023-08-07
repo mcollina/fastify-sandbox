@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/mcollina/fastify-sandbox#readme",
   "devDependencies": {
-    "@fastify/cookie": "^8.0.0",
+    "@fastify/cookie": "^9.0.4",
     "@fastify/pre-commit": "^2.0.2",
     "fastify": "^4.0.2",
     "fastify-plugin": "^4.3.0",
